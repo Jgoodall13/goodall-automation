@@ -15,7 +15,7 @@ export default function WorkPage() {
         <div className="flex max-w-3xl flex-col gap-6">
           <p className="font-mono text-[13px] tracking-wide text-accent-text uppercase">The work</p>
           <h1 className="text-5xl leading-[0.95] font-semibold tracking-tight sm:text-7xl">
-            Receipts.
+            The unglamorous stuff. Done right.
           </h1>
           <p className="text-lg leading-relaxed text-muted sm:text-xl">
             Every project here follows the same shape: the problem, what I built, why I picked
@@ -30,14 +30,14 @@ export default function WorkPage() {
         <nav aria-label="Projects" className="mt-14">
           <ol className="grid gap-3 md:grid-cols-3">
             {projects.map((project, i) => (
-              <li key={project.slug}>
+              <li key={project.id}>
                 <a
-                  href={`#${project.slug}`}
+                  href={`#${project.id}`}
                   className="group flex h-full flex-col gap-2 rounded-2xl border border-line bg-surface p-5 transition hover:border-ink"
                 >
                   <span className="font-mono text-sm text-accent-text">0{i + 1}</span>
                   <span className="font-semibold tracking-tight">{project.title}</span>
-                  <span className="text-[15px] leading-relaxed text-muted">{project.summary}</span>
+                  <span className="text-[15px] leading-relaxed text-muted">{project.cardBlurb}</span>
                 </a>
               </li>
             ))}
@@ -48,8 +48,8 @@ export default function WorkPage() {
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         {projects.map((project, i) => (
           <article
-            key={project.slug}
-            id={project.slug}
+            key={project.id}
+            id={project.id}
             className="grid gap-10 border-t border-line py-16 lg:grid-cols-[300px_1fr] lg:gap-16 lg:py-24"
           >
             <header className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
@@ -59,7 +59,7 @@ export default function WorkPage() {
               </h2>
               <p className="text-muted">{project.client}</p>
               <ul className="flex flex-wrap gap-2 pt-1">
-                {project.stack.map((tool) => (
+                {project.tags.map((tool) => (
                   <li
                     key={tool}
                     className="rounded-full border border-line px-3 py-1 font-mono text-xs text-muted"
@@ -73,7 +73,15 @@ export default function WorkPage() {
             <div className="flex max-w-2xl flex-col gap-10">
               <Block label="The problem">{project.problem}</Block>
               <Block label="The build">{project.build}</Block>
-              <Block label="Why these tools">{project.whyTheseTools}</Block>
+              {project.callout && (
+                <aside className="flex flex-col gap-3 rounded-2xl border border-term-line bg-term p-6 text-term-text sm:p-8">
+                  <h3 className="text-xl leading-snug font-semibold tracking-tight text-accent sm:text-2xl">
+                    {project.callout.title}
+                  </h3>
+                  <p className="text-lg leading-relaxed">{project.callout.body}</p>
+                </aside>
+              )}
+              <Block label="Why these tools">{project.whyTools}</Block>
               <div className="flex flex-col gap-4">
                 <h3 className="font-mono text-[13px] tracking-wide text-accent-text uppercase">
                   The result
@@ -82,13 +90,16 @@ export default function WorkPage() {
                   {project.results.map((result) => (
                     <div
                       key={result.label}
-                      className="flex flex-col-reverse gap-1 rounded-2xl border border-line bg-surface p-6"
+                      className="flex flex-col-reverse justify-end gap-1 rounded-2xl border border-line bg-surface p-6"
                     >
                       <dt className="text-[15px] text-muted">{result.label}</dt>
                       <dd className="text-4xl font-semibold tracking-tight">{result.value}</dd>
                     </div>
                   ))}
                 </dl>
+                {project.footnote && (
+                  <p className="font-mono text-sm text-muted">{project.footnote}</p>
+                )}
               </div>
             </div>
           </article>

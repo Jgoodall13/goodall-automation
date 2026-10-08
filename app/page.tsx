@@ -7,12 +7,28 @@ const reasons = [
   {
     title: "10 years in the trenches.",
     body: "A decade inside .NET, NetSuite, and ecommerce. I don't need a tour of your systems. I've lived in them.",
-    tools: [".NET", "NetSuite", "Ecommerce"],
+    tools: [
+      ".NET",
+      "NetSuite",
+      "SuiteScript",
+      "SQL Server",
+      "TypeScript",
+      "Node.js",
+      "Python",
+      "React",
+    ],
   },
   {
     title: "Agents and automation.",
-    body: "I build the thing that actually does the work. Not a slick demo that works once, a system your team stops thinking about.",
-    tools: ["Copilot Studio", "Azure AI Foundry", "Power Automate"],
+    body: "I build the thing that actually does the work. Not a slick demo that works once, a system your team stops thinking about. Copilot Studio when you live in Teams. Claude when the job needs real reasoning.",
+    tools: [
+      "Copilot Studio",
+      "Azure AI Foundry",
+      "Power Automate",
+      "Claude API",
+      "Custom MCP servers",
+      "RAG",
+    ],
   },
   {
     title: "The cloud doesn't scare me.",
@@ -57,7 +73,7 @@ export default function Home() {
               Glad you asked.
             </h2>
           </div>
-          <ol className="mt-14 grid gap-5 md:grid-cols-3">
+          <ol className="mt-14 grid gap-5 lg:grid-cols-3">
             {reasons.map((reason, i) => (
               <li
                 key={reason.title}

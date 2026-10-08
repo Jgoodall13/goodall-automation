@@ -1,71 +1,53 @@
 export type Project = {
-  slug: string;
+  /** Used for the #anchor link on the Work page. */
+  id: string;
   title: string;
+  /** One or two sentences for the project index at the top of the Work page. */
+  cardBlurb: string;
   /** Anonymized client, e.g. "300-person promotional products company". Never real names. */
   client: string;
-  summary: string;
+  tags: string[];
   problem: string;
   build: string;
-  whyTheseTools: string;
+  /** Optional highlighted story: a bug caught, a call made, a fire put out. */
+  callout?: { title: string; body: string };
+  whyTools: string;
   results: { value: string; label: string }[];
-  stack: string[];
+  /** Optional small print under the results. */
+  footnote?: string;
 };
 
-// PLACEHOLDERS: these show the shape of a write-up. Replace them with real,
-// anonymized projects before launch. Anything marked "XX" is a number to fill in.
 export const projects: Project[] = [
   {
-    slug: "order-intake-agent",
-    title: "The order intake agent",
-    client: "Mid-size distributor running NetSuite",
-    summary:
-      "Customer POs arrive by email in every format imaginable. Now an agent reads them and builds the sales order.",
+    id: "vendor-inbox",
+    title: "The vendor inbox that runs itself",
+    cardBlurb:
+      "Hundreds of vendor emails a day, each one hand-keyed into NetSuite. Now they're read, matched, and written back in about three minutes, and nothing gets guessed.",
+    client: "Mid-market company running NetSuite + Microsoft 365",
+    tags: ["Power Automate", "Copilot Studio", ".NET", "SQL Server", "NetSuite RESTlet"],
+
     problem:
-      "Customer purchase orders showed up as PDFs, spreadsheets, and the occasional photo of a fax. Two people spent every morning re-keying them into NetSuite, line by line, and typos meant wrong shipments.",
+      "Every purchase order generates vendor replies: acknowledgements, ship date changes, tracking numbers, holds, backorders. All of it landed in one shared inbox, and a person had to read each email, figure out which PO it meant, open NetSuite, update the right fields, and file it. Most of it needed zero judgment. Worse, customers didn't get their tracking email until someone got to the inbox. An email at 4:45 on a Friday meant Monday.",
+
     build:
-      "A Power Automate flow watches the orders inbox and hands each attachment to a Copilot Studio agent that pulls out the customer, ship-to, and line items. The flow checks everything against NetSuite, creates the sales order, and pings the rep in Teams. Anything the agent isn't sure about goes to a human review queue instead of guessing.",
-    whyTheseTools:
-      "The company already paid for Microsoft 365, so Copilot Studio and Power Automate meant no new vendor and no new security review. Reps already lived in Teams, so the exceptions went where they'd actually see them. NetSuite integration went through a small API layer so the agent never touches the ERP directly.",
+      "Power Automate watches the inbox and hands each email to a Copilot Studio agent that classifies it into one of 12 categories and pulls out the PO, tracking numbers, and ship date. One HTTP call hands off to a .NET service I built: an idempotent ingest API, a SQL Server queue that doubles as a full audit trail, and a worker that batches updates to a NetSuite RESTlet every five minutes. The RESTlet runs 14 safety checks before it writes anything. When it writes a tracking number, NetSuite's existing automation emails the customer. I owned the service and the NetSuite side; the business-side automation lead owned the flow and classifier.",
+
+    callout: {
+      title: "The scariest bug is the one with no error",
+      body: "PO numbers that differ only by a trailing letter are completely different orders, and thousands of them collide. The original design stripped suffixes to improve match rates, which would have quietly written to the wrong live order with no error and no trace. I killed it. Exact match or a human looks at it. Failing is cheap. Guessing writes to a live order.",
+    },
+
+    whyTools:
+      "Power Automate can't reach an on-prem SQL Server without standing up a gateway, and it can't sign NetSuite's OAuth 1.0a requests. So the half that talks to systems lives in .NET. The email and classification half stayed in Power Automate and Copilot Studio on purpose, so the business can change routing rules without waiting on a deploy from me. Windows Service over IIS, because app pool recycling silently kills a background worker. Targeted NetSuite field updates over load-and-save, at a fraction of the governance cost.",
+
     results: [
-      { value: "XX hrs", label: "of manual entry saved per week" },
-      { value: "XX%", label: "fewer order entry errors" },
+      { value: "300+/wk", label: "vendor emails nobody has to read anymore" },
+      { value: "94.9%", label: "of emails handled end to end with no human involved" },
+      { value: "0", label: "errors, lost records, or manual recoveries since go-live" },
+      { value: "14", label: "safety checks before every single write" },
     ],
-    stack: ["Copilot Studio", "Power Automate", "NetSuite", "Teams"],
-  },
-  {
-    slug: "knowledge-agent",
-    title: "The \"just ask it\" knowledge agent",
-    client: "300-person B2B company",
-    summary:
-      "Answers buried in SharePoint and PDFs, surfaced in Teams by an agent that respects who's allowed to see what.",
-    problem:
-      "Sales and support asked the same questions all day. The answers existed somewhere in SharePoint, old PDFs, and a few people's heads, and those people were tired of being the search engine.",
-    build:
-      "An Azure AI Foundry agent with retrieval over the company's SharePoint libraries, published into Teams. Every answer cites its source document, and anything sensitive stays locked to the people who already had access.",
-    whyTheseTools:
-      "Foundry over Copilot Studio here because we needed control over retrieval and the model, not just a chat front end. Entra ID handled identity, so permissions came from the systems IT already managed instead of a new access list to babysit.",
-    results: [
-      { value: "XX", label: "questions answered per week" },
-      { value: "XX hrs", label: "of interruptions saved per week" },
-    ],
-    stack: ["Azure AI Foundry", "SharePoint", "Entra ID", "Teams"],
-  },
-  {
-    slug: "ecommerce-netsuite-sync",
-    title: "The sync that stopped overselling",
-    client: "Ecommerce brand on NetSuite",
-    summary:
-      "Storefront and ERP disagreed about inventory. Now they don't, and failures fix themselves or yell loudly.",
-    problem:
-      "Orders and inventory moved between the storefront and NetSuite on a fragile scheduled export. When it broke, nobody knew until customers bought products that weren't in stock.",
-    build:
-      "A .NET service on Azure that syncs orders, inventory, and fulfillment in near real time through a queue, with retries, dead-lettering, and alerts. It's deployed through a DevOps pipeline, so changes ship tested and repeatable.",
-    whyTheseTools:
-      "Low-code was the wrong tool here. The volume, the retries, and the error handling called for real code. .NET because it's what I know cold. Azure queues because a failed sync should wait and retry, not disappear. A pipeline because \"deploy\" shouldn't mean \"Jacob remotes in on a Friday.\"",
-    results: [
-      { value: "XX", label: "oversold orders per month (was XX)" },
-      { value: "XX min", label: "from order to ERP (was XX hrs)" },
-    ],
-    stack: [".NET", "Azure", "NetSuite", "Azure DevOps"],
+
+    footnote:
+      "No made-up hours-saved number. Every stat here came from a query, not an estimate.",
   },
 ];
