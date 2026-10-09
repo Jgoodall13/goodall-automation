@@ -2,9 +2,13 @@
 export const SITE = {
   name: "Goodall Automation",
   tagline: "Automate it all.",
-  pitch: "Agents and automation for Microsoft-stack businesses",
+  /** Home page eyebrow. */
+  pitch: "NetSuite + Microsoft 365, connected.",
+  /** Browser tab and search result title, after the name. No trailing period. */
+  title: "NetSuite + Microsoft 365, connected",
+  /** Search and link-preview description. Keep it under ~160 characters. */
   description:
-    "Jacob Goodall builds AI agents and automations for businesses that run on Microsoft 365, NetSuite, and Azure. Tell me your problem and I'll tell you how to automate it.",
+    "I connect NetSuite and Microsoft 365 with AI agents and automations that do the work your team hates. 10 years in .NET and NetSuite. Tell me your problem.",
   owner: "Jacob Goodall",
 };
 

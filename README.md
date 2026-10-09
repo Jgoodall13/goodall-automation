@@ -1,14 +1,14 @@
 # Goodall Automation
 
-**Automate it all.**
+**NetSuite + Microsoft 365, connected.**
 
-I'm Jacob Goodall, and I build AI agents and automations for businesses that run on Microsoft. If your company lives in Microsoft 365, NetSuite, and spreadsheets held together with hope, I build the agents and flows that make it run itself.
+I'm Jacob Goodall, and I connect NetSuite and Microsoft 365 with AI agents and automations that do the work your team hates. If your company lives in NetSuite, Microsoft 365, and spreadsheets held together with hope, I build the agents and flows that make it run itself.
 
 This repo is the Goodall Automation website.
 
 ## What I build
 
-- **AI agents.** Copilot Studio and Azure AI Foundry agents that read the email, answer the question, and build the order, so your team doesn't have to.
+- **AI agents.** Copilot Studio, Azure AI Foundry, and Claude agents that read the email, answer the question, and update NetSuite, so your team doesn't have to.
 - **Automation.** Power Automate flows and .NET services that move data between Microsoft 365, NetSuite, your storefront, and everything in between.
 - **Cloud that holds up.** Azure, Entra ID, Linux, and DevOps pipelines. Everything I build gets deployed, secured, and kept running, not handed off as a demo.
 
@@ -41,4 +41,4 @@ Open [http://localhost:3000](http://localhost:3000). Until email is set up, cont
 
 To send real email, copy `.env.example` to `.env.local` and add a [Resend](https://resend.com) API key plus the address submissions should go to. Add the same values in Vercel's environment variables for production.
 
-The brand name lives in `lib/site.ts`, and Work page projects live in `lib/projects.ts`.
+The brand name, positioning line, and search description live in `lib/site.ts`. Work page projects live in `lib/projects.ts`.

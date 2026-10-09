@@ -1,8 +1,9 @@
 # Project: [Goodall Automation | Goodall Labs] — consulting site
 
 ## What this is
-Personal consulting site for Jacob Goodall: AI agents + automation for
-Microsoft-stack businesses. Tone: confident, a little cocky, direct. Clean, minimal.
+Personal consulting site for Jacob Goodall: AI agents + automation that connect
+NetSuite and Microsoft 365. Positioning line: "NetSuite + Microsoft 365, connected."
+Tone: confident, a little cocky, direct. Clean, minimal.
 
 ## Stack
 Next.js (App Router, TypeScript), Tailwind, deployed on Vercel.
