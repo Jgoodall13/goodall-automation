@@ -3,6 +3,8 @@
 import { headers } from "next/headers";
 import { z } from "zod";
 import { SITE } from "@/lib/site";
+import { formatBlueprintText } from "@/lib/terry/format";
+import { type Blueprint, BlueprintSchema } from "@/lib/terry/schema";
 
 const contactSchema = z.object({
   name: z.string().min(1, "I'll need a name.").max(100, "Keep it under 100 characters."),
@@ -12,6 +14,22 @@ const contactSchema = z.object({
     .min(10, "Give me a little more to go on.")
     .max(5000, "Keep it under 5,000 characters."),
 });
+
+// With a Terry blueprint attached, the problem box becomes optional.
+const contactWithBlueprintSchema = contactSchema.extend({
+  problem: z.string().max(5000, "Keep it under 5,000 characters."),
+});
+
+/** The attached Terry blueprint, if present and valid. Anything else is silently ignored. */
+function parseTerryBlueprint(raw: FormDataEntryValue | null): Blueprint | null {
+  if (typeof raw !== "string" || !raw || raw.length > 20_000) return null;
+  try {
+    const result = BlueprintSchema.safeParse(JSON.parse(raw));
+    return result.success ? result.data : null;
+  } catch {
+    return null;
+  }
+}
 
 type Field = keyof z.infer<typeof contactSchema>;
 
@@ -54,7 +72,8 @@ export async function sendContact(
     problem: String(formData.get("problem") ?? "").trim(),
   };
 
-  const parsed = contactSchema.safeParse(values);
+  const blueprint = parseTerryBlueprint(formData.get("terryBlueprint"));
+  const parsed = (blueprint ? contactWithBlueprintSchema : contactSchema).safeParse(values);
   if (!parsed.success) {
     const fieldErrors = z.flattenError(parsed.error).fieldErrors;
     const errors: Partial<Record<Field, string>> = {};
@@ -73,11 +92,21 @@ export async function sendContact(
     };
   }
 
+  const subject = `New problem from ${values.name.replace(/[\r\n]+/g, " ")}${blueprint ? " (+ Terry's blueprint)" : ""}`;
+  // Without a blueprint this is exactly the original email.
+  const text = [
+    `Name: ${values.name}`,
+    `Email: ${values.email}`,
+    "",
+    values.problem || "(No message. Terry's blueprint is attached.)",
+    ...(blueprint ? ["", "------------------------------", "", formatBlueprintText(blueprint)] : []),
+  ].join("\n");
+
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO_EMAIL;
   if (!apiKey || !to) {
     if (process.env.NODE_ENV === "development") {
-      console.log("[contact] Resend not configured, logging instead:", values);
+      console.log(`[contact] Resend not configured. Would have sent:\n\nSubject: ${subject}\n\n${text}`);
       return { status: "success" };
     }
     console.error("[contact] RESEND_API_KEY or CONTACT_TO_EMAIL is not set");
@@ -95,8 +124,8 @@ export async function sendContact(
         from: process.env.CONTACT_FROM_EMAIL ?? `${SITE.name} <onboarding@resend.dev>`,
         to: [to],
         reply_to: values.email,
-        subject: `New problem from ${values.name.replace(/[\r\n]+/g, " ")}`,
-        text: `Name: ${values.name}\nEmail: ${values.email}\n\n${values.problem}`,
+        subject,
+        text,
       }),
     });
     if (!res.ok) {

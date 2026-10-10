@@ -1,7 +1,10 @@
 import { ButtonLink } from "@/components/button-link";
 import { ContactForm } from "@/components/contact-form";
 import { RunLog } from "@/components/run-log";
+import { TerryAttachmentProvider } from "@/components/terry/attachment";
+import { TerryCard } from "@/components/terry/terry-card";
 import { SITE } from "@/lib/site";
+import { isTerryEnabled } from "@/lib/terry/config";
 
 const reasons = [
   {
@@ -38,6 +41,9 @@ const reasons = [
 ];
 
 export default function Home() {
+  // Read at build time; the page is static. Flipping TERRY_ENABLED in Vercel needs a redeploy.
+  const terryEnabled = isTerryEnabled();
+
   return (
     <>
       {/* Hero */}
@@ -115,32 +121,41 @@ export default function Home() {
 
       {/* Intake */}
       <section id="contact" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 lg:py-32">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-          <div className="flex flex-col gap-5">
-            <p className="font-mono text-[13px] tracking-wide text-accent-text uppercase">Contact</p>
-            <h2 className="text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
-              Got a problem? Perfect.
-            </h2>
-            <p className="max-w-md text-lg leading-relaxed text-muted">
-              I solve them. Send me your name, your email, and what&apos;s broken. I&apos;ll get back
-              to you with what we can do about it.
-            </p>
-            <ol className="mt-4 flex flex-col gap-3 font-mono text-sm text-muted">
-              <li>
-                <span className="text-accent-text">01</span> You tell me what&apos;s eating your week.
-              </li>
-              <li>
-                <span className="text-accent-text">02</span> I come back with ideas and options.
-              </li>
-              <li>
-                <span className="text-accent-text">03</span> If it&apos;s a fit, we build it.
-              </li>
-            </ol>
+        {/* Lets Terry hand the form a blueprint. With nothing attached, the form is unchanged. */}
+        <TerryAttachmentProvider>
+          <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+            <div className="flex flex-col gap-5">
+              <p className="font-mono text-[13px] tracking-wide text-accent-text uppercase">Contact</p>
+              <h2 className="text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
+                Got a problem? Perfect.
+              </h2>
+              <p className="max-w-md text-lg leading-relaxed text-muted">
+                I solve them. Send me your name, your email, and what&apos;s broken. I&apos;ll get back
+                to you with what we can do about it.
+              </p>
+              <ol className="mt-4 flex flex-col gap-3 font-mono text-sm text-muted">
+                <li>
+                  <span className="text-accent-text">01</span> You tell me what&apos;s eating your week.
+                </li>
+                <li>
+                  <span className="text-accent-text">02</span> I come back with ideas and options.
+                </li>
+                <li>
+                  <span className="text-accent-text">03</span> If it&apos;s a fit, we build it.
+                </li>
+              </ol>
+              {terryEnabled && (
+                <div className="mt-6">
+                  <TerryCard />
+                </div>
+              )}
+            </div>
+            {/* Sticky on desktop so the form stays in view next to a long Terry blueprint. */}
+            <div className="self-start rounded-2xl border border-line bg-surface p-6 sm:p-8 lg:sticky lg:top-24">
+              <ContactForm />
+            </div>
           </div>
-          <div className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
-            <ContactForm />
-          </div>
-        </div>
+        </TerryAttachmentProvider>
       </section>
     </>
   );

@@ -2,6 +2,8 @@
 
 import { useActionState } from "react";
 import { sendContact, type ContactState } from "@/app/actions";
+import { useTerryAttachment } from "@/components/terry/attachment";
+import { TerryBadge } from "@/components/terry/terry-badge";
 
 const initialState: ContactState = { status: "idle" };
 
@@ -10,6 +12,7 @@ const inputClass =
 
 export function ContactForm() {
   const [state, formAction, pending] = useActionState(sendContact, initialState);
+  const terry = useTerryAttachment();
 
   if (state.status === "success") {
     return (
@@ -56,15 +59,26 @@ export function ContactForm() {
         <textarea
           id="problem"
           name="problem"
-          required
+          required={!terry.blueprint}
           rows={5}
           maxLength={5000}
           defaultValue={state.values?.problem}
-          placeholder="e.g. Two people spend every morning re-keying POs from email into NetSuite."
+          placeholder={
+            terry.blueprint
+              ? "Anything to add? (optional, Terry's blueprint is attached)"
+              : "e.g. Two people spend every morning re-keying POs from email into NetSuite."
+          }
           aria-invalid={!!state.errors?.problem}
           aria-describedby={state.errors?.problem ? "problem-error" : undefined}
           className={`${inputClass} resize-y`}
         />
+        {/* Only present when the visitor attached a blueprint from Terry. */}
+        {terry.blueprint && (
+          <>
+            <input type="hidden" name="terryBlueprint" value={JSON.stringify(terry.blueprint)} />
+            <TerryBadge blueprint={terry.blueprint} onRemove={terry.detach} />
+          </>
+        )}
       </Field>
 
       {/* Honeypot: hidden from people, filled in by bots. */}
