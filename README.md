@@ -27,18 +27,3 @@ The site's Work page has write-ups of real projects: what was broken, what I bui
 Perfect. Send it through the form on the site with your name, your email, and what's eating your team's week. I'll get back to you with what we can build.
 
 ---
-
-## Running the site locally
-
-Built with Next.js 16, React 19, TypeScript, and Tailwind CSS v4, and hosted on Vercel. Requires Node.js 20.9+.
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000). Until email is set up, contact form submissions print to the terminal.
-
-To send real email, copy `.env.example` to `.env.local` and add a [Resend](https://resend.com) API key plus the address submissions should go to. Add the same values in Vercel's environment variables for production.
-
-The brand name, positioning line, and search description live in `lib/site.ts`. Work page projects live in `lib/projects.ts`.

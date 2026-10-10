@@ -15,8 +15,6 @@ export const ALLOWED_TOOLS = [
   "Outlook / Exchange",
   "Entra ID",
   "Dataverse",
-  ".NET",
-  "Python",
   "Azure Functions",
   "Azure Container Apps",
   "Azure SQL Database",
@@ -54,6 +52,28 @@ export const BlueprintSchema = z.object({
 
 export type Blueprint = z.infer<typeof BlueprintSchema>;
 
+// Terry never picks a language for Azure compute; this question brings the client's
+// preference to the call instead.
+export const AZURE_STANDARDS_QUESTION =
+  "Does your IT team have a preferred language or standards for services in Azure?";
+const AZURE_COMPUTE = new Set(["Azure Functions", "Azure Container Apps"]);
+const LANGUAGE_QUESTION = /preferred language/i;
+
+/**
+ * Guarantees the Azure standards question appears, worded exactly, when the plan uses Azure
+ * Functions or Container Apps, and never otherwise. Keeps the 3-question cap.
+ */
+export function withAzureQuestion(blueprint: Blueprint): Blueprint {
+  // Out-of-scope questions are for whoever the visitor hires, so leave them alone.
+  if (!blueprint.inScope) return blueprint;
+  const usesAzureCompute = blueprint.steps.some((step) => AZURE_COMPUTE.has(step.tool));
+  const others = blueprint.questionsForYou.filter((q) => !LANGUAGE_QUESTION.test(q));
+  const questionsForYou = usesAzureCompute
+    ? [...others.slice(0, 2), AZURE_STANDARDS_QUESTION]
+    : others;
+  return { ...blueprint, questionsForYou };
+}
+
 // Looks like code, config, or markup. Terry explains what and why, never how.
 const CODE_PATTERN = /`|=>|[{}]|<\/?[a-z][\w-]*[^>]*>/i;
 
@@ -62,10 +82,13 @@ const CODE_PATTERN = /`|=>|[{}]|<\/?[a-z][\w-]*[^>]*>/i;
 const RESTLET_CALLERS: ReadonlySet<string> = new Set([
   "Azure Functions",
   "Azure Container Apps",
-  ".NET",
-  "Python",
   "3PL / partner API",
 ]);
+
+// Jacob picks the language on the call, so an in-scope blueprint never names one.
+const LANGUAGE_PATTERN = /\.net\b|\bc#|\bpython\b|\btypescript\b|\bjavascript\b|\bfastapi\b/i;
+// Case-sensitive on purpose: "node" is also an ordinary word.
+const NODE_PATTERN = /\bNode(\.js)?\b/;
 
 /**
  * Rules the JSON schema can't express: what an in-scope vs. out-of-scope blueprint must
@@ -96,6 +119,13 @@ export function blueprintProblems(blueprint: Blueprint): string[] {
     ...blueprint.questionsForYou,
   ];
   if (text.some((line) => CODE_PATTERN.test(line))) problems.push("contains code-like text");
+  // Out-of-scope answers may echo the visitor's own stack ("a Python shop"), so only in scope.
+  if (
+    blueprint.inScope &&
+    text.some((line) => LANGUAGE_PATTERN.test(line) || NODE_PATTERN.test(line))
+  ) {
+    problems.push("names a programming language or framework");
+  }
 
   return problems;
 }

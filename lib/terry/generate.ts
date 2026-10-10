@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { TERRY_SYSTEM_PROMPT } from "./prompt";
-import { type Blueprint, BlueprintSchema, blueprintProblems } from "./schema";
+import { type Blueprint, BlueprintSchema, blueprintProblems, withAzureQuestion } from "./schema";
 
 // Server-only: imports the API key via the SDK. Never import this from a client component.
 
@@ -84,5 +84,5 @@ async function attemptBlueprint(problem: string, feedback: string[]): Promise<At
     return { ok: false, reason: "broke_rules", problems };
   }
 
-  return { ok: true, blueprint };
+  return { ok: true, blueprint: withAzureQuestion(blueprint) };
 }
