@@ -8,35 +8,36 @@ import { isTerryEnabled } from "@/lib/terry/config";
 
 const reasons = [
   {
-    title: "10 years in the trenches.",
-    body: "A decade inside .NET, NetSuite, and ecommerce. I don't need a tour of your systems. I've lived in them.",
-    tools: [
-      ".NET",
-      "NetSuite",
-      "SuiteScript",
-      "SQL Server",
-      "TypeScript",
-      "Node.js",
-      "Python",
-      "React",
-    ],
+    title: "The right architecture, every time.",
+    body: "Sometimes the answer is a script. Sometimes it's a multi-step agent. Knowing which one before anyone writes code is the job, and it's usually the cheaper answer.",
+    tools: ["Workflow automation", "Power Automate", "Copilot Studio", "SuiteScript", "TypeScript"],
   },
   {
-    title: "Agents and automation.",
-    body: "I build the thing that actually does the work. Not a slick demo that works once, a system your team stops thinking about. Copilot Studio when you live in Teams. Claude when the job needs real reasoning.",
+    title: "Agents that survive production.",
+    body: "Guardrails enforced in code, not requested in a prompt. Every user's own permissions. Every call traced, measured, and tuned. Not a demo that works once.",
     tools: [
-      "Copilot Studio",
-      "Azure AI Foundry",
-      "Power Automate",
+      "Microsoft Foundry",
+      "LangGraph",
+      "Python",
+      "MCP",
+      "Foundry IQ",
       "Claude API",
-      "Custom MCP servers",
       "RAG",
     ],
   },
   {
-    title: "The cloud doesn't scare me.",
-    body: "I don't hand off a prototype and disappear. I deploy it, secure it, and keep it running. Your IT team will like me too.",
-    tools: ["Azure", "Entra ID", "Linux", "DevOps pipelines"],
+    title: "Deep in the systems.",
+    body: "A decade inside ERPs, integrations, and cloud infrastructure. I've lived in the systems I'm automating, and I deploy, secure, and run what I build.",
+    tools: [
+      "NetSuite",
+      "Microsoft 365",
+      "Azure",
+      "Entra ID",
+      ".NET",
+      "SQL Server",
+      "Linux",
+      "DevOps",
+    ],
   },
 ];
 
@@ -54,11 +55,11 @@ export default function Home() {
             {SITE.pitch}
           </p>
           <h1 className="text-5xl leading-[0.95] font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl">
-            I automate the work your team hates.
+            Agents & Automations that do real work.
           </h1>
           <p className="max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
-            You run on Microsoft 365, NetSuite, and spreadsheets held together with hope. I build
-            the agents and flows that make it run itself.
+            From a script that saves an afternoon to an AI agent that works across your systems. I
+            solve the problem, and build the solution your team needs.
           </p>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <ButtonLink href="#contact">Tell me your problem</ButtonLink>
@@ -101,18 +102,20 @@ export default function Home() {
               </li>
             ))}
           </ol>
+          <p className="mt-10 font-mono text-sm text-muted">
+            I hunt the failures that don&apos;t throw errors.
+          </p>
         </div>
       </section>
 
-      {/* The cocky bridge */}
+      {/* The bridge */}
       <section className="border-y border-term-line bg-term text-term-text">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-10 px-5 py-24 sm:px-8 lg:py-32">
           <p className="max-w-4xl text-3xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
-            <span className="text-accent">Want proof?</span> Go look at the work.{" "}
-            <span className="text-accent">Want ideas?</span> Take them. Seriously, steal whatever you
-            want.{" "}
+            <span className="text-accent">Want proof?</span> See the work.{" "}
+            <span className="text-accent">Want ideas?</span> Take them.{" "}
             <span className="text-term-muted">
-              When you&apos;re ready to actually build it, I&apos;m right here.
+              When you&apos;re ready to build it properly, I&apos;m here.
             </span>
           </p>
           <ButtonLink href="/work">See the work →</ButtonLink>

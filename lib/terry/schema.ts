@@ -10,6 +10,8 @@ export const ALLOWED_TOOLS = [
   "Power Automate",
   "Copilot Studio",
   "Microsoft Foundry",
+  "Foundry IQ",
+  "Azure AI Search",
   "SharePoint Lists",
   "Teams",
   "Outlook / Exchange",
@@ -19,6 +21,7 @@ export const ALLOWED_TOOLS = [
   "Azure Container Apps",
   "Azure SQL Database",
   "Azure Table Storage",
+  "Azure Blob Storage",
   "Azure Key Vault",
   "Application Insights",
   "MCP server",
@@ -26,6 +29,7 @@ export const ALLOWED_TOOLS = [
   "RAG",
   "Wrike API",
   "3PL / partner API",
+  "Third-party API",
 ] as const;
 
 // The shape sent to the model as structured output. Length limits aren't enforced by the
@@ -45,8 +49,6 @@ export const BlueprintSchema = z.object({
     .max(5),
   humanCheckpoints: z.array(z.string().max(160)).max(3),
   yikes: z.array(z.string().max(200)).max(3),
-  // null only when inScope is false.
-  complexity: z.enum(["Small", "Medium", "Large"]).nullable(),
   questionsForYou: z.array(z.string().max(160)).max(3),
 });
 
@@ -85,8 +87,9 @@ const RESTLET_CALLERS: ReadonlySet<string> = new Set([
   "3PL / partner API",
 ]);
 
-// Jacob picks the language on the call, so an in-scope blueprint never names one.
-const LANGUAGE_PATTERN = /\.net\b|\bc#|\bpython\b|\btypescript\b|\bjavascript\b|\bfastapi\b/i;
+// Jacob picks the language and framework on the call, so an in-scope blueprint never names one.
+const LANGUAGE_PATTERN =
+  /\.net\b|\bc#|\bpython\b|\btypescript\b|\bjavascript\b|\bjava\b|\bfastapi\b|\blang(graph|chain)\b|\bsemantic kernel\b|\bautogen\b|\bcrewai\b/i;
 // Case-sensitive on purpose: "node" is also an ordinary word.
 const NODE_PATTERN = /\bNode(\.js)?\b/;
 
@@ -100,7 +103,6 @@ export function blueprintProblems(blueprint: Blueprint): string[] {
   if (blueprint.inScope) {
     if (blueprint.steps.length < 2) problems.push("in-scope blueprint needs at least 2 steps");
     if (blueprint.yikes.length < 1) problems.push("in-scope blueprint needs at least 1 yikes");
-    if (blueprint.complexity === null) problems.push("in-scope blueprint needs a complexity");
     const tools = blueprint.steps.map((step) => step.tool);
     if (tools.includes("NetSuite RESTlet") && !tools.some((tool) => RESTLET_CALLERS.has(tool))) {
       problems.push("RESTlet has no caller that can sign OAuth 1.0a");

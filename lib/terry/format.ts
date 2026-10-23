@@ -15,7 +15,7 @@ export function formatBlueprintText(blueprint: Blueprint): string {
 
   const lines = [
     "TERRY'S BLUEPRINT",
-    `${blueprint.headline} [${blueprint.complexity}]`,
+    blueprint.headline,
     blueprint.summary,
     "",
     "THE PLAN",

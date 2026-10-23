@@ -129,9 +129,9 @@ export function TerryCard() {
               Not sure where to start? Ask Terry.
             </h3>
             <p className="text-[15px] leading-relaxed text-muted">
-              My blueprint agent, built on the patterns and guardrails from real NetSuite +
-              Microsoft 365 builds. Describe the mess, get a plan. Optional. The form works fine
-              without him.
+              My blueprint agent, built on the patterns and guardrails from real production work,
+              from quick automations to custom AI agents. Describe the mess, get a plan. Optional.
+              The form works fine without him.
             </p>
           </div>
         </div>
@@ -160,7 +160,7 @@ export function TerryCard() {
               value={problem}
               onChange={(e) => setProblem(e.target.value)}
               disabled={status === "loading"}
-              placeholder="e.g. Our 3PL emails tracking numbers and someone types them into NetSuite every afternoon."
+              placeholder="e.g. Our sales team wants an agent in Teams that looks up orders in NetSuite, checks payments in Stripe, and drafts the follow-up email."
               aria-describedby="terry-note terry-count"
               className="w-full resize-y rounded-xl border border-line bg-paper px-4 py-3 text-[16px] text-ink placeholder:text-muted/70 transition focus:border-ink focus:outline-none disabled:opacity-60"
             />

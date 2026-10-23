@@ -48,7 +48,7 @@ for (const [i, problem] of problems.entries()) {
   }
 
   const b = data.blueprint;
-  console.log(`${b.headline}  [${b.inScope ? b.complexity : "out of scope"}]  (${seconds}s)\n`);
+  console.log(`${b.headline}  [${b.inScope ? "in scope" : "out of scope"}]  (${seconds}s)\n`);
   console.log(b.summary);
   if (b.steps.length) {
     console.log("\nSteps");

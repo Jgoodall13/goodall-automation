@@ -16,12 +16,12 @@ export default function WorkPage() {
         <div className="flex max-w-3xl flex-col gap-6">
           <p className="font-mono text-[13px] tracking-wide text-accent-text uppercase">The work</p>
           <h1 className="text-5xl leading-[0.95] font-semibold tracking-tight sm:text-7xl">
-            The unglamorous stuff. Done right.
+            Built right. Proven in production.
           </h1>
           <p className="text-lg leading-relaxed text-muted sm:text-xl">
             Every project here follows the same shape: the problem, what I built, why I picked
-            those tools, and what it saved. Steal any idea you like. When you want it built right,
-            you know where to find me.
+            those tools, and what it saved. Steal any idea you like. When you want one built for
+            you, you know where to find me.
           </p>
           <p className="font-mono text-sm text-muted">
             Client details are anonymized. The problems are real.

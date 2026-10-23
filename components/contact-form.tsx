@@ -66,7 +66,7 @@ export function ContactForm() {
           placeholder={
             terry.blueprint
               ? "Anything to add? (optional, Terry's blueprint is attached)"
-              : "e.g. Two people spend every morning re-keying POs from email into NetSuite."
+              : "e.g. We want one internal AI agent for the company that answers questions from our docs and pulls live data from NetSuite and Salesforce."
           }
           aria-invalid={!!state.errors?.problem}
           aria-describedby={state.errors?.problem ? "problem-error" : undefined}

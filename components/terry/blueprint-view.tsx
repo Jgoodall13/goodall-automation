@@ -18,16 +18,9 @@ export function BlueprintView({ blueprint }: { blueprint: Blueprint }) {
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <p className="text-xl leading-snug font-semibold tracking-tight text-balance">
-            {blueprint.headline}
-          </p>
-          {blueprint.complexity && (
-            <span className="shrink-0 rounded-full border border-line px-3 py-1 font-mono text-xs text-muted">
-              {blueprint.complexity}
-            </span>
-          )}
-        </div>
+        <p className="text-xl leading-snug font-semibold tracking-tight text-balance">
+          {blueprint.headline}
+        </p>
         <p className="text-[15px] leading-relaxed text-muted">{blueprint.summary}</p>
       </div>
 

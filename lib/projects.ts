@@ -19,6 +19,38 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    id: "internal-agent",
+    title: "The internal agent that stopped guessing",
+    cardBlurb:
+      "A company-wide AI agent in Teams that works across NetSuite, Wrike, and Stripe as the person asking. Built in code, so the rules live in the system instead of the prompt.",
+    client: "Mid-market company running NetSuite + Microsoft 365",
+    tags: ["Microsoft Foundry", "LangGraph", "Python", "MCP", "Foundry IQ", "Teams"],
+
+    problem:
+      "The first NetSuite agent was built in a low-code tool, and it mostly worked. But it explored metadata before every answer, wrote queries by trial and error, and was slow. Sometimes it was confidently wrong. There was no way to see exactly what it ran, and no way to enforce a rule beyond asking nicely in the instructions. The company wanted one internal agent that could work across its business systems and be trusted to write, not just read.",
+
+    build:
+      "A Python agent built with LangGraph and deployed as a hosted agent in Microsoft Foundry, published to Teams. A Foundry toolbox puts NetSuite, Wrike, and Stripe behind a single MCP endpoint, and every tool call runs as the signed-in user: Foundry stores and refreshes each person's OAuth token, so there are no credentials in the code, and NetSuite's own role permissions are the guardrail. The agent is grounded with Foundry IQ and a set of verified query patterns, each one tested before it went in. Every tool call, query, and timing is traced, so tuning comes from measurements, not guesses. Creates and updates are blocked in code until the user explicitly confirms a summary of what will be written.",
+
+    callout: {
+      title: "Confidently wrong is worse than slow",
+      body: "Asked for today's script execution logs, the agent spent 93 seconds wandering through metadata, then told the user their NetSuite role didn't have access. That wasn't true. Tracing every call turned up the two queries that actually work, plus a date quirk that made 'today' silently match nothing. The same hunt found a query pattern that returned wrong totals with no error. That pattern is banned now. The log question takes 27 seconds and gets the right answer on the first try.",
+    },
+
+    whyTools:
+      "Copilot Studio is the right answer for most question-and-answer agents, and it's where this one started. It hit a ceiling: the rules needed to be enforced in code, every query needed to be visible, the agent needed tools from several systems, and writes had to be safe. A Foundry hosted agent gives full control in code while still living in the company's own Azure and publishing to Teams like any other agent. LangGraph makes each step explicit, which is what lets a confirmation guard sit in front of every write. The toolbox keeps tokens per user and lets a new system join without touching the agent's code. A persistent state layer was considered for multi-step writes and deliberately skipped, because it would have changed memory for every conversation. A small guard did the job with less risk.",
+
+    results: [
+      { value: "93s → 27s", label: "for script log lookups, and from a confidently wrong answer to the right one" },
+      { value: "55s → 15s", label: "to find a customer's latest order" },
+      { value: "0", label: "credentials in the code. Every call runs as the person asking" },
+      { value: "0", label: "writes without an explicit yes. Creates and updates are blocked in code until confirmed" },
+    ],
+
+    footnote:
+      "Times measured from traced runs of the same questions, before and after tuning.",
+  },
+  {
     id: "vendor-inbox",
     title: "The vendor inbox that runs itself",
     cardBlurb:
@@ -77,35 +109,6 @@ export const projects: Project[] = [
       { value: "25", label: "team lists, each with its own billing and sales views" },
       { value: "2-way", label: "edits and comments sync back to NetSuite automatically" },
       { value: "1+ yr", label: "in production, and it's still how billing and sales work" },
-    ],
-  },
-  {
-    id: "photo-task",
-    title: "The photo shoot that runs itself",
-    cardBlurb:
-      "New products bounced between warehouse, art, and sales by email, printouts, and hallway trips. Now NetSuite and Wrike hand them off automatically, start to finish.",
-    client: "Mid-market company running NetSuite + Wrike",
-    tags: ["NetSuite SuiteScript", "Wrike API", "OAuth 2.0"],
-
-    problem:
-      "Every new product had to be photographed for the ecommerce sites and NetSuite before it could sell. The warehouse dropped it in the photo room and told art. Art printed the work order, hand-built a Wrike task with every detail retyped, figured out which sales rep and website it belonged to, and tagged them. After approval, art walked back to tell the warehouse, who returned the product to its bin and closed the work order. Three teams, five handoffs, all by word of mouth. Emails got missed, details got retyped wrong, products landed in the wrong bins, and work orders sat open because nobody closed the loop.",
-
-    build:
-      "A scheduled SuiteScript watches for new work orders and builds the Wrike task through the API, with every product detail filled in and the right sales rep tagged automatically from the work order. The Wrike link writes back to the work order, and the warehouse is notified that it's ready to shoot. A second scheduled script checks Wrike every 15 minutes, and when art marks the photos approved, it flips an approval flag in NetSuite and tells the warehouse to return the product. The link stays on the work order, so nobody ever has to ask where it goes. When the warehouse closes the work order, the Wrike task closes itself.",
-
-    callout: {
-      title: "Nobody had to change tools",
-      body: "The warehouse lives in NetSuite. Art lives in Wrike. Instead of forcing anyone onto a new system, the automation carries the work between them. Each team kept working exactly where they already were, and the handoffs just started happening on their own. That's why people actually use it.",
-    },
-
-    whyTools:
-      "The work order already held everything: product details, departments, the responsible rep. So the logic lives in NetSuite, right next to the data. This time NetSuite makes the calls, authenticating to Wrike's API with OAuth 2.0 straight from SuiteScript, so there's no auth wall and no middleware. On other projects, where outside tools had to call into NetSuite, I built a .NET layer. Here it would've been dead weight. Sometimes the right answer is the smallest one.",
-
-    results: [
-      { value: "3 yrs", label: "in production, and the warehouse and art teams still love it" },
-      { value: "0", label: "Wrike tasks typed by hand. Every detail comes from the work order" },
-      { value: "5", label: "handoffs between teams, all automatic" },
-      { value: "0", label: "trips down the hall to say 'it's done'" },
     ],
   },
 ];
