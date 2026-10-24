@@ -9,8 +9,8 @@ import { isTerryEnabled } from "@/lib/terry/config";
 const reasons = [
   {
     title: "The right architecture, every time.",
-    body: "Sometimes the answer is a script. Sometimes it's a multi-step agent. Knowing which one before anyone writes code is the job, and it's usually the cheaper answer.",
-    tools: ["Workflow automation", "Power Automate", "Copilot Studio", "SuiteScript", "TypeScript"],
+    body: "Sometimes the answer is a script. Sometimes it's a multi-step agent with a custom dashboard. Knowing which one before anyone writes code is the job, and it's usually the cheaper answer.",
+    tools: ["Power Automate", "Copilot Studio", "SuiteScript", "Next.js", "TypeScript", "Workflow Automation"],
   },
   {
     title: "Agents that survive production.",

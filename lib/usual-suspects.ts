@@ -15,31 +15,33 @@ export const usualSuspects: UsualSuspect[] = [
     tools: ["Copilot Studio", "NetSuite", "MCP"],
   },
   {
+    title: "Answers with receipts",
+    blurb:
+      "An agent grounded in your SOPs, contracts, and policies that cites its sources and says so when it doesn't know.",
+    tools: ["Foundry IQ", "Azure AI Search", "Copilot Studio"],
+  },
+  {
     title: "Your 3PL, plugged in",
     blurb:
       "Orders go out, tracking comes back, fulfillments create themselves, and customers get their shipping email.",
-    tools: ["NetSuite", "3PL API"],
+    tools: ["NetSuite", "SuiteScript", "3PL API"],
   },
   {
-    title: "The Power Automate bridge",
-    blurb: "Power Automate can't talk to NetSuite out of the box. It can now.",
-    tools: ["Power Automate", "NetSuite", "Azure"],
-  },
-  {
-    title: "Spreadsheet → live list",
-    blurb: "Kill the CSV email chain. One shared list, synced both ways with NetSuite.",
-    tools: ["SharePoint Lists", "NetSuite"],
-  },
-  {
-    title: "The inbox that sorts itself",
+    title: "The missing connector",
     blurb:
-      "A shared mailbox read, classified, and written back to NetSuite, with a human for anything uncertain.",
-    tools: ["Outlook", "Copilot Studio", "NetSuite"],
+      "When two systems have no connector, I build a small, secure one in Azure so Power Automate, Teams, and your agents can reach your ERP.",
+    tools: ["Azure Functions", "Power Automate", "REST APIs"],
   },
   {
-    title: "Approvals in Teams",
+    title: "Sensitive files, off email",
     blurb:
-      "Approve or reject from the chat you already have open; the decision lands in NetSuite.",
-    tools: ["Teams", "Power Automate", "NetSuite"],
+      "Clients send spreadsheets to a key-protected endpoint instead of email, and each file is checked, parsed, and lands in a review list for your team.",
+    tools: ["Power Automate", "SharePoint Lists", "API keys"],
+  },
+  {
+    title: "KPI dashboards people actually open",
+    blurb:
+      "A fast, custom web app on your own database that puts the numbers your team checks every morning in one place, instead of five exports.",
+    tools: ["Next.js", "React", "SQL"],
   },
 ];

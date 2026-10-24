@@ -22,7 +22,7 @@ export const projects: Project[] = [
     id: "internal-agent",
     title: "The internal agent that stopped guessing",
     cardBlurb:
-      "A company-wide AI agent in Teams that works across NetSuite, Wrike, and Stripe as the person asking. Built in code, so the rules live in the system instead of the prompt.",
+      "A company-wide AI agent in Teams that works across NetSuite, Wrike, and Stripe with role based permissions. Built in code, so the rules live in the system instead of the prompt.",
     client: "Mid-market company running NetSuite + Microsoft 365",
     tags: ["Microsoft Foundry", "LangGraph", "Python", "MCP", "Foundry IQ", "Teams"],
 
@@ -48,7 +48,7 @@ export const projects: Project[] = [
     ],
 
     footnote:
-      "Times measured from traced runs of the same questions, before and after tuning.",
+      "Times measured from runs of the same questions, before and after grounding.",
   },
   {
     id: "vendor-inbox",
