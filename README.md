@@ -24,3 +24,6 @@ The site's Work page has write-ups of real projects: what was broken, what I bui
 ## Got a problem?
 
 Perfect. Send it through the form on the site with your name, your email, and what's eating your team's week. I'll get back to you with what we can build.
+
+
+https://goodallautomation.com
