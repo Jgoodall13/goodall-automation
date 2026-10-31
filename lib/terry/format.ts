@@ -16,6 +16,8 @@ export function formatBlueprintText(blueprint: Blueprint): string {
   const lines = [
     "TERRY'S BLUEPRINT",
     blueprint.headline,
+    `Architecture: ${blueprint.architecture}. ${blueprint.architectureWhy}`,
+    "",
     blueprint.summary,
     "",
     "THE PLAN",
@@ -24,7 +26,6 @@ export function formatBlueprintText(blueprint: Blueprint): string {
   if (blueprint.humanCheckpoints.length > 0) {
     lines.push("", "HUMAN CHECKPOINTS", ...blueprint.humanCheckpoints.map((c) => `- ${c}`));
   }
-  lines.push("", "YIKES", ...blueprint.yikes.map((y) => `! ${y}`));
   if (blueprint.questionsForYou.length > 0) {
     lines.push("", "QUESTIONS", ...blueprint.questionsForYou.map((q, i) => `${i + 1}. ${q}`));
   }

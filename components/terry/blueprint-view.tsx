@@ -18,10 +18,23 @@ export function BlueprintView({ blueprint }: { blueprint: Blueprint }) {
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-col gap-3">
-        <p className="text-xl leading-snug font-semibold tracking-tight text-balance">
-          {blueprint.headline}
-        </p>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <p className="text-xl leading-snug font-semibold tracking-tight text-balance">
+            {blueprint.headline}
+          </p>
+          {blueprint.architecture && (
+            <span className="shrink-0 rounded-full border border-line px-3 py-1 font-mono text-xs text-muted">
+              {blueprint.architecture}
+            </span>
+          )}
+        </div>
         <p className="text-[15px] leading-relaxed text-muted">{blueprint.summary}</p>
+        {blueprint.architectureWhy && (
+          <p className="text-sm leading-relaxed text-muted">
+            <span className="font-mono text-accent-text">Why this shape:</span>{" "}
+            {blueprint.architectureWhy}
+          </p>
+        )}
       </div>
 
       <Section label="The plan">
@@ -46,18 +59,6 @@ export function BlueprintView({ blueprint }: { blueprint: Blueprint }) {
           <BulletList items={blueprint.humanCheckpoints} />
         </Section>
       )}
-
-      <div className="flex flex-col gap-3 rounded-2xl border border-term-line bg-term p-5 text-term-text sm:p-6">
-        <p className="text-lg font-semibold tracking-tight text-accent">Yikes</p>
-        <ul className="flex flex-col gap-3">
-          {blueprint.yikes.map((item) => (
-            <li key={item} className="flex gap-3 text-[15px] leading-relaxed">
-              <span aria-hidden className="font-mono text-accent">!</span>
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
 
       {blueprint.questionsForYou.length > 0 && (
         <Section label="Questions I'd ask you">

@@ -45,7 +45,7 @@ async function attemptBlueprint(problem: string, feedback: string[]): Promise<At
 
   let message;
   try {
-    message = await client.beta.messages.parse({
+    message = await client.beta.messages.create({
       model: MODEL,
       max_tokens: MAX_TOKENS,
       // Server-side fallback: if Sonnet 5.5's safety classifiers decline (rare for this
@@ -57,14 +57,12 @@ async function attemptBlueprint(problem: string, feedback: string[]): Promise<At
       messages: [{ role: "user", content }],
     });
   } catch (err) {
-    if (err instanceof Anthropic.APIError) {
-      // Log the status only. Never log the visitor's description.
-      console.error("[terry] API error:", err.status, err.name);
-      return { ok: false, reason: "api_error" };
-    }
-    // The SDK throws when the structured output doesn't parse or fails the zod schema.
-    console.error("[terry] output failed schema validation");
-    return { ok: false, reason: "invalid_output" };
+    // Log the status only. Never log the visitor's description.
+    console.error(
+      "[terry] API error:",
+      err instanceof Anthropic.APIError ? `${err.status} ${err.name}` : "request failed",
+    );
+    return { ok: false, reason: "api_error" };
   }
 
   if (message.stop_reason === "refusal") {
@@ -72,11 +70,33 @@ async function attemptBlueprint(problem: string, feedback: string[]): Promise<At
     return { ok: false, reason: "refused" };
   }
 
-  const blueprint = message.parsed_output;
-  if (!blueprint) {
+  const text = message.content.find(
+    (block): block is Anthropic.Beta.BetaTextBlock => block.type === "text",
+  )?.text;
+  if (!text) {
     console.error("[terry] no structured output; stop_reason:", message.stop_reason);
     return { ok: false, reason: "invalid_output" };
   }
+
+  // Parse and validate here (not with the SDK's parse helper) so a schema failure can tell the
+  // retry exactly what was wrong, the same way rule failures do.
+  let json: unknown;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    console.error("[terry] output was not valid JSON; stop_reason:", message.stop_reason);
+    return { ok: false, reason: "broke_rules", problems: ["the output was cut off; keep it shorter"] };
+  }
+  const parsed = BlueprintSchema.safeParse(json);
+  if (!parsed.success) {
+    // Field paths and limits only; zod issues don't include the visitor's text.
+    const problems = parsed.error.issues.map(
+      (issue) => `${issue.path.join(".") || "blueprint"}: ${issue.message}`,
+    );
+    console.error("[terry] output failed the schema:", problems.join("; "));
+    return { ok: false, reason: "broke_rules", problems };
+  }
+  const blueprint = parsed.data;
 
   const problems = blueprintProblems(blueprint);
   if (problems.length > 0) {

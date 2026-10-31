@@ -1,21 +1,21 @@
 # Goodall Automation
 
-**AI agents & workflow automation.**
+**AI agents, architected and built.**
 
-I'm Jacob Goodall. I build AI agents and workflow automations for growing businesses, from a script that saves an afternoon to an agent that works across your systems. I build what the problem actually needs.
+I'm Jacob Goodall. I architect and build AI agents that run your processes: one agent, a team of agents, or just a well-placed workflow. I design the architecture, build it, and run it in production. And if a script will do, I'll tell you.
 
 This repo is the Goodall Automation website.
 
 ## What I build
 
-- **Workflow automation.** The repeatable, high-value fixes: inboxes that sort themselves, spreadsheet chains replaced by live lists, approvals that happen where people already work.
-- **Custom enterprise agents.** Coded agents with guardrails enforced in code, each user's own permissions, every call traced and measured, and real production deployment. Not a demo that works once.
+- **AI agents.** Single agents and multi-agent systems, with guardrails enforced in code, each user's own permissions, every call traced and measured, and real production deployment. Not a demo that works once.
+- **Workflow automation.** The right answer when an agent isn't needed: inboxes that sort themselves, spreadsheet chains replaced by live lists, approvals that happen where people already work.
 
 ## Why me
 
-- **The right architecture, every time.** Sometimes the answer is a script. Sometimes it's a multi-step agent. Knowing which one before anyone writes code is the job, and it's usually the cheaper answer.
+- **The right architecture, every time.** One agent or several? Copilot Studio or code? Or no agent at all? Deciding that before anyone builds is the job, and it's usually the cheaper answer.
 - **Agents that survive production.** Guardrails in code, not requested in a prompt. Every call traced, measured, and tuned.
-- **Deep in the systems.** A decade inside ERPs, integrations, and cloud infrastructure, including NetSuite, Microsoft 365, and Azure. I deploy, secure, and run what I build, and I hunt the failures that don't throw errors.
+- **Deep in the systems.** A decade inside ERPs, integrations, and cloud infrastructure, including NetSuite, Microsoft 365, and Azure. Agents are only as good as their access to real systems, and I know how to give them that access safely.
 
 ## See the work
 

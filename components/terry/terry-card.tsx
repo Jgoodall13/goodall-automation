@@ -129,9 +129,8 @@ export function TerryCard() {
               Not sure where to start? Ask Terry.
             </h3>
             <p className="text-[15px] leading-relaxed text-muted">
-              My blueprint agent, built on the patterns and guardrails from real production work,
-              from quick automations to custom AI agents. Describe the mess, get a plan. Optional.
-              The form works fine without him.
+              My blueprint agent. Describe the process, and Terry sketches the architecture: a
+              workflow, one agent, or a team of agents. Optional. The form works fine without him.
             </p>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { ButtonLink } from "@/components/button-link";
+import { Certifications } from "@/components/certifications";
 import { ContactForm } from "@/components/contact-form";
 import { RunLog } from "@/components/run-log";
 import { TerryAttachmentProvider } from "@/components/terry/attachment";
@@ -9,8 +10,17 @@ import { isTerryEnabled } from "@/lib/terry/config";
 const reasons = [
   {
     title: "The right architecture, every time.",
-    body: "Sometimes the answer is a script. Sometimes it's a multi-step agent with a custom dashboard. Knowing which one before anyone writes code is the job, and it's usually the cheaper answer.",
-    tools: ["Power Automate", "Copilot Studio", "SuiteScript", "Next.js", "TypeScript", "Workflow Automation"],
+    body: "One agent or several? Copilot Studio or code? Or no agent at all? Deciding that before anyone builds is the job, and it's usually the cheaper answer.",
+    tools: [
+      "Agent architecture",
+      "Copilot Studio",
+      "Microsoft Foundry",
+      "Power Automate",
+      "Workflow automation",
+      "SuiteScript",
+      "Next.js",
+      "TypeScript",
+    ],
   },
   {
     title: "Agents that survive production.",
@@ -21,13 +31,14 @@ const reasons = [
       "Python",
       "MCP",
       "Foundry IQ",
+      "Evals & tracing",
       "Claude API",
       "RAG",
     ],
   },
   {
     title: "Deep in the systems.",
-    body: "A decade inside ERPs, integrations, and cloud infrastructure. I've lived in the systems I'm automating, and I deploy, secure, and run what I build.",
+    body: "A decade inside ERPs, integrations, and cloud infrastructure. Agents are only as good as their access to real systems, and I know how to give them that access safely.",
     tools: [
       "NetSuite",
       "Microsoft 365",
@@ -55,11 +66,11 @@ export default function Home() {
             {SITE.pitch}
           </p>
           <h1 className="text-5xl leading-[0.95] font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl">
-            Agents & Automations that do real work.
+            I architect and build AI agents that run your processes.
           </h1>
           <p className="max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
-            From a script that saves an afternoon to an AI agent that works across your systems. I
-            solve the problem, and build the solution your team needs.
+            One agent, a team of agents, or just a well-placed workflow. I design the architecture,
+            build it, and run it in production. And if a script will do, I&apos;ll tell you.
           </p>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <ButtonLink href="#contact">Tell me your problem</ButtonLink>
@@ -102,9 +113,7 @@ export default function Home() {
               </li>
             ))}
           </ol>
-          <p className="mt-10 font-mono text-sm text-muted">
-            I hunt the failures that don&apos;t throw errors.
-          </p>
+          <Certifications />
         </div>
       </section>
 

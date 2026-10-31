@@ -3,12 +3,12 @@ export const SITE = {
   name: "Goodall Automation",
   tagline: "Automate it all.",
   /** Home page eyebrow. */
-  pitch: "AI agents & workflow automation",
+  pitch: "Single agents · Multi-agent systems · Workflow automation",
   /** Browser tab and search result title, after the name. No trailing period. */
-  title: "AI agents & workflow automation",
+  title: "AI agents, architected and built",
   /** Search and link-preview description. Keep it under ~160 characters. */
   description:
-    "AI agents and workflow automation for growing businesses. From quick automations to production-grade agents, built on the systems you already run.",
+    "AI agent architecture and implementation for growing businesses. Single agents, multi-agent systems, and workflow automation on the systems you already run.",
   owner: "Jacob Goodall",
 };
 

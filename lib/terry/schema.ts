@@ -32,10 +32,19 @@ export const ALLOWED_TOOLS = [
   "Third-party API",
 ] as const;
 
+// The architecture call Terry leads with: the smallest shape that does the job.
+export const ARCHITECTURES = ["Workflow automation", "Single agent", "Multi-agent"] as const;
+
 // The shape sent to the model as structured output. Length limits aren't enforced by the
 // API itself; the SDK moves them into the schema descriptions and checks them on parse.
+// Field order matters: the model writes fields in order, so the architecture is decided
+// before the steps are planned.
 export const BlueprintSchema = z.object({
   inScope: z.boolean(),
+  // Both null when out of scope.
+  architecture: z.enum(ARCHITECTURES).nullable(),
+  // 280, not 200: "why this shape, and why not the simpler one" overran 200 on most test runs.
+  architectureWhy: z.string().max(280).nullable(),
   headline: z.string().max(90),
   summary: z.string().max(400),
   steps: z
@@ -48,7 +57,6 @@ export const BlueprintSchema = z.object({
     )
     .max(5),
   humanCheckpoints: z.array(z.string().max(160)).max(3),
-  yikes: z.array(z.string().max(200)).max(3),
   questionsForYou: z.array(z.string().max(160)).max(3),
 });
 
@@ -58,12 +66,13 @@ export type Blueprint = z.infer<typeof BlueprintSchema>;
 // preference to the call instead.
 export const AZURE_STANDARDS_QUESTION =
   "Does your IT team have a preferred language or standards for services in Azure?";
-const AZURE_COMPUTE = new Set(["Azure Functions", "Azure Container Apps"]);
+// Anything Jacob writes code for in Azure, including a coded agent in Foundry.
+const AZURE_COMPUTE = new Set(["Azure Functions", "Azure Container Apps", "Microsoft Foundry"]);
 const LANGUAGE_QUESTION = /preferred language/i;
 
 /**
  * Guarantees the Azure standards question appears, worded exactly, when the plan uses Azure
- * Functions or Container Apps, and never otherwise. Keeps the 3-question cap.
+ * Functions, Container Apps, or a Foundry agent, and never otherwise. Keeps the 3-question cap.
  */
 export function withAzureQuestion(blueprint: Blueprint): Blueprint {
   // Out-of-scope questions are for whoever the visitor hires, so leave them alone.
@@ -93,6 +102,15 @@ const LANGUAGE_PATTERN =
 // Case-sensitive on purpose: "node" is also an ordinary word.
 const NODE_PATTERN = /\bNode(\.js)?\b/;
 
+// Steps that make a plan an agent rather than a fixed workflow. Keeps the architecture label honest.
+const AGENT_TOOLS: ReadonlySet<string> = new Set([
+  "Copilot Studio",
+  "Microsoft Foundry",
+  "Claude API",
+  "Foundry IQ",
+  "RAG",
+]);
+
 /**
  * Rules the JSON schema can't express: what an in-scope vs. out-of-scope blueprint must
  * contain, and "no code, ever". Returns the problems found, or an empty array.
@@ -102,22 +120,37 @@ export function blueprintProblems(blueprint: Blueprint): string[] {
 
   if (blueprint.inScope) {
     if (blueprint.steps.length < 2) problems.push("in-scope blueprint needs at least 2 steps");
-    if (blueprint.yikes.length < 1) problems.push("in-scope blueprint needs at least 1 yikes");
+    if (!blueprint.architecture || !blueprint.architectureWhy) {
+      problems.push("in-scope blueprint needs an architecture and architectureWhy");
+    }
     const tools = blueprint.steps.map((step) => step.tool);
     if (tools.includes("NetSuite RESTlet") && !tools.some((tool) => RESTLET_CALLERS.has(tool))) {
       problems.push("RESTlet has no caller that can sign OAuth 1.0a");
     }
+    const agentSteps = tools.filter((tool) => AGENT_TOOLS.has(tool)).length;
+    if (blueprint.architecture === "Workflow automation" && agentSteps > 0) {
+      problems.push("workflow automation plan includes an agent step; call it an agent or drop the AI step");
+    }
+    if (blueprint.architecture === "Single agent" && agentSteps < 1) {
+      problems.push("single agent plan has no agent step");
+    }
+    if (blueprint.architecture === "Multi-agent" && agentSteps < 2) {
+      problems.push("multi-agent plan needs a step for each agent");
+    }
   } else {
     if (blueprint.steps.length > 0) problems.push("out-of-scope blueprint must not have steps");
     if (blueprint.questionsForYou.length < 1) problems.push("out-of-scope answer needs questions");
+    if (blueprint.architecture !== null || blueprint.architectureWhy !== null) {
+      problems.push("out-of-scope blueprint must have architecture and architectureWhy null");
+    }
   }
 
   const text = [
     blueprint.headline,
     blueprint.summary,
+    blueprint.architectureWhy ?? "",
     ...blueprint.steps.flatMap((step) => [step.title, step.why]),
     ...blueprint.humanCheckpoints,
-    ...blueprint.yikes,
     ...blueprint.questionsForYou,
   ];
   if (text.some((line) => CODE_PATTERN.test(line))) problems.push("contains code-like text");

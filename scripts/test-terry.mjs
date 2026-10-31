@@ -1,6 +1,6 @@
 // Test Terry from the terminal against a running dev server.
 //
-//   node scripts/test-terry.mjs                     # the 3 sample problems
+//   node scripts/test-terry.mjs                     # all sample problems
 //   node scripts/test-terry.mjs "your problem here" # one custom problem
 //   node scripts/test-terry.mjs --json              # raw JSON instead of the pretty view
 //
@@ -17,6 +17,17 @@ const SAMPLES = [
   "We run SAP and want a Java service that syncs customers into Salesforce.",
   "Sales reps request credit memos by emailing accounting a spreadsheet. Accounting re-keys each one into NetSuite and emails the rep back. Half are missing the invoice number.",
   "Our 3PL wants to pull our open orders and send tracking back to us. They said they can call an API.",
+  "We want an assistant in Teams that answers questions about our NetSuite data.",
+  "We want an agent that looks up orders, checks payment status in Stripe, and creates sales orders after someone approves.",
+  "We run Salesforce and Outlook and want follow-up emails drafted from deal notes.",
+  "We need a Java service on AWS that syncs SAP to Salesforce.",
+  // Architecture checks: expect Workflow automation, Single agent, then Single or Multi-agent.
+  "Every night we export a CSV from NetSuite and email it to the same 3 people.",
+  "Sales reps keep asking ops for order status in Teams.",
+  "Vendor emails come in about POs; we need them classified, matched to the right PO, and updated in NetSuite with a human approving risky changes.",
+  // Platform checks: expect Foundry with no extra hosting, then Foundry plus Container Apps for the website.
+  "We want an IT help desk agent in Teams that answers employee questions from our IT policy documents.",
+  "We want an IT help desk agent that answers questions from our IT policy documents, in Teams and also embedded on our intranet website.",
 ];
 
 const args = process.argv.slice(2);
@@ -48,7 +59,8 @@ for (const [i, problem] of problems.entries()) {
   }
 
   const b = data.blueprint;
-  console.log(`${b.headline}  [${b.inScope ? "in scope" : "out of scope"}]  (${seconds}s)\n`);
+  console.log(`${b.headline}  [${b.inScope ? b.architecture : "out of scope"}]  (${seconds}s)\n`);
+  if (b.architectureWhy) console.log(`Why this shape: ${b.architectureWhy}\n`);
   console.log(b.summary);
   if (b.steps.length) {
     console.log("\nSteps");
@@ -57,10 +69,6 @@ for (const [i, problem] of problems.entries()) {
   if (b.humanCheckpoints.length) {
     console.log("\nHuman checkpoints");
     b.humanCheckpoints.forEach((c) => console.log(`  - ${c}`));
-  }
-  if (b.yikes.length) {
-    console.log("\nYikes");
-    b.yikes.forEach((y) => console.log(`  ! ${y}`));
   }
   if (b.questionsForYou.length) {
     console.log("\nQuestions I'd ask you");
